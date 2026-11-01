@@ -3,3 +3,4 @@ chromadb
 pypdf
 google-genai
 python-dotenv
+groq
