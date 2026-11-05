@@ -435,6 +435,11 @@ with st.sidebar:
         "Categoría",
         ["Adulto / Máster", "Infantil (Menor de 15)", "Juvenil (16-17 años)"]
     )
+
+    idioma = st.selectbox(
+        "🌐 Idioma / Language", 
+        ["Español", "English", "Português"]
+    )
     
     st.markdown("---")
     st.markdown("### 📋 Ficha Técnica Activa")
@@ -500,7 +505,8 @@ if pregunta_final:
         badge_titulo = "Criterio Formativo"
     
     prompt = f"""
-    Eres un árbitro experto de Jiu-Jitsu Brasileño de la IBJJF. 
+    Eres un árbitro experto de Jiu-Jitsu Brasileño de la IBJJF.
+    DEBES REDACTAR TU RESPUESTA OBLIGATORIAMENTE EN ESTE IDIOMA: {idioma}. 
     Responde a la pregunta basándote ÚNICAMENTE en el reglamento proporcionado. 
     {instruccion_estilo}
     
