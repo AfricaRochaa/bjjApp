@@ -6,6 +6,7 @@ import chromadb
 from google import genai
 from groq import Groq
 from dotenv import load_dotenv
+from chromadb.utils import embedding_functions
 
 load_dotenv()
 
@@ -330,9 +331,20 @@ st.markdown(CSS, unsafe_allow_html=True)
 # ---------------------------------------------------------------------------
 # Conexión Backend REAL (ChromaDB + Gemini)
 # ---------------------------------------------------------------------------
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+client = genai.Client(
+    api_key=os.getenv("GEMINI_API_KEY"),
+    http_options={"api_version": "v1beta"}
+)
+# Conectar el cerebro multilingüe a la búsqueda
+ef_multilingue = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="paraphrase-multilingual-MiniLM-L12-v2"
+)
+
 cliente_chroma = chromadb.PersistentClient(path="./bd_vectorial")
-coleccion = cliente_chroma.get_collection(name="reglas_bjj")
+coleccion = cliente_chroma.get_collection(
+    name="reglas_bjj", 
+    embedding_function=ef_multilingue
+)
 
 # ---------------------------------------------------------------------------
 # Interfaz Visual Principal
@@ -443,7 +455,7 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("### 📋 Ficha Técnica Activa")
-    motor_nombre = "Gemini Flash" if "Gemini" in modelo_seleccionado else "Llama 3.3 70B (Groq)"
+    motor_nombre = "Gemini" if "Gemini" in modelo_seleccionado else "Groq"
     st.markdown(f"""
     * **LLM en uso:** `{motor_nombre}`
     * **Top-K Chunks:** `{top_k}`
@@ -538,7 +550,7 @@ if pregunta_final:
             for intento in range(3):
                 try:
                     res = client.models.generate_content(
-                        model='gemini-flash-latest', # Restaurado a tu versión original
+                        model='gemini-flash-latest', 
                         contents=prompt
                     )
                     texto_respuesta = res.text
