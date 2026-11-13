@@ -1,6 +1,8 @@
 streamlit
 chromadb
-pypdf
+pymupdf
 google-genai
 python-dotenv
 groq
+sentence-transformers
+langchain-text-splitters
